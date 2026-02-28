@@ -238,14 +238,16 @@ function git-branch {
             }
         )
 
+		$deleteBranchKey = "alt-d"
+
         $out = $lines | fzf `
             --ansi `
 			--preview-border sharp `
 			--preview-window "right:60%:wrap" `
             --height=50% --layout=reverse --border `
             --delimiter "`t" --with-nth 1 `
-            --expect=ctrl-d `
-			--footer "Switch: ENTER | Delete: ^d" `
+            --expect=$deleteBranchKey `
+			--footer "Preview-up: ^u | Preview-down: ^d | Switch: ENTER | Delete: $deleteBranchKey" `
 			--border-label " Git Branches " `
             --preview "git --no-pager log --color=always -n 10 --pretty=format:'%C(magenta)%h%Creset %C(cyan)%cr%Creset %C(yellow)%an%Creset %C(auto)%d%Creset%n  %s%n' {2}"
 
@@ -263,7 +265,7 @@ function git-branch {
         }
 
         # CTRL+D → delete branch
-        if ($key -eq "ctrl-d") {
+        if ($key -eq $deleteBranchKey) {
 
             if ($ref -eq $current) {
                 Write-Host "Cannot delete current branch." -ForegroundColor Red
