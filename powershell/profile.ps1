@@ -207,18 +207,23 @@ function git-branch {
         return
     }
 
+    $deleteBranchKey = "alt-d"
+	$fetchKey = "alt-f"
+
     while ($true) {
 
         $current = git branch --show-current
 
-        $locals =
-            git for-each-ref `
-                --sort=-committerdate `
-                --format="%(refname:short)`t%(upstream:short)`t%(upstream:track)" `
-                refs/heads
+        # locals: name + upstream + tracking status (e.g. "[ahead 2]", "[behind 1]", "[ahead 1, behind 3]", "[gone]")
+        $locals = git for-each-ref `
+            --sort=-committerdate `
+            --format="%(refname:short)`t%(upstream:short)`t%(upstream:track)" `
+            refs/heads
 
-        $remotes =
-            git for-each-ref --sort=-committerdate --format="%(refname:short)" refs/remotes |
+        $remotes = git for-each-ref `
+            --sort=-committerdate `
+            --format="%(refname:short)" `
+            refs/remotes |
             Where-Object { $_ -notmatch '^(origin$|origin/HEAD|HEAD)$' }
 
         $lines = @(
@@ -226,29 +231,51 @@ function git-branch {
                 $name, $up, $track = $line -split "`t", 3
                 $star = if ($name -eq $current) { "*" } else { " " }
 
-                if ($track -match '\[gone\]') { $label = "`e[31m[gone]`e[0m" }
-                elseif ($up)              { $label = "`e[32m[trk]`e[0m" }
-                else                      { $label = "`e[33m[lcl]`e[0m" }
+                # status label
+                if ($track -match '\[gone\]') {
+                    $label = "`e[31m[gne]`e[0m"   # red
+                }
+                elseif ($up) {
+                    $label = "`e[32m[trk]`e[0m"    # green
+                }
+                else {
+                    $label = "`e[33m[lcl]`e[0m"    # yellow
+                }
 
-                "$star $label $name`t$name"
+                # ahead/behind numbers
+                $ahead = 0
+                $behind = 0
+                if ($track) {
+                    if ($track -match 'ahead\s+(\d+)')  { $ahead  = [int]$matches[1] }
+                    if ($track -match 'behind\s+(\d+)') { $behind = [int]$matches[1] }
+                }
+
+                # fixed-width AB column so things line up
+                # e.g. "↑ 12 ↓  3" (always same width)
+                $abText = ""  # 8 spaces when nothing
+                if ($ahead -gt 0 -or $behind -gt 0) {
+                    $abText = ("↑{0,3} ↓{1,3}" -f $ahead, $behind)
+                }
+                $ab = "`e[35m$abText`e[0m"  # magenta
+
+                # Display<TAB>Ref
+                "$star $label $ab $name`t$name"
             }
 
             foreach ($ref in $remotes) {
-                "  `e[36m[rmt]`e[0m $ref`t$ref"
+                "  `e[36m[rmt]`e[0m  $ref`t$ref"  # cyan; keep spacing similar
             }
         )
 
-		$deleteBranchKey = "alt-d"
-
         $out = $lines | fzf `
             --ansi `
-			--preview-border sharp `
-			--preview-window "right:60%:wrap" `
             --height=50% --layout=reverse --border `
+            --preview-border sharp `
+            --preview-window "right:60%:wrap" `
             --delimiter "`t" --with-nth 1 `
-            --expect=$deleteBranchKey `
-			--footer "Preview-up: ^u | Preview-down: ^d | Switch: ENTER | Delete: $deleteBranchKey" `
-			--border-label " Git Branches " `
+			--expect="$deleteBranchKey,$fetchKey" `
+            --footer "Pre-up: ^u | Pre-down: ^d | Pre-hide: ^p | Switch: ENTER | Delete: $deleteBranchKey | Fetch: $fetchKey" `
+            --border-label " Git Branches " `
             --preview "git --no-pager log --color=always -n 10 --pretty=format:'%C(magenta)%h%Creset %C(cyan)%cr%Creset %C(yellow)%an%Creset %C(auto)%d%Creset%n  %s%n' {2}"
 
         if (-not $out) { return }
@@ -257,14 +284,21 @@ function git-branch {
         $picked = $out[1]
         if (-not $picked) { continue }
 
+		if ($key -eq $fetchKey) {
+			Write-Host "[git fetch --all --prune --tags]" -ForegroundColor DarkGray
+				git fetch --all --prune --tags
+				Start-Sleep -Milliseconds 300
+				continue
+		}
+
         $ref = ($picked -split "`t", 2)[1]
 
-        # normalize remote branch names
+        # normalize remote branch names for switching/deleting
         if ($ref -like "origin/*") {
             $ref = $ref -replace '^origin/', ''
         }
 
-        # CTRL+D → delete branch
+        # Alt+D → delete branch
         if ($key -eq $deleteBranchKey) {
 
             if ($ref -eq $current) {
@@ -286,11 +320,14 @@ function git-branch {
             continue
         }
 
-        # ENTER → switch branch
-        git switch $ref 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            git switch -c $ref origin/$ref
-        }
+		git show-ref --verify --quiet "refs/heads/$ref"
+			$localExists = ($LASTEXITCODE -eq 0)
+
+			if ($localExists) {
+				git switch $ref
+			} else {
+				git switch --track "origin/$ref"
+			}
 
         return
     }
