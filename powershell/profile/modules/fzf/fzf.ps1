@@ -9,7 +9,7 @@ function Test-FzfDependencies {
         $missingDependencies += [PSCustomObject]@{
             Name = "fd"
             Type = "command"
-            InstallCommand = "winget install --id sharkdp.fd --source winget"
+            InstallCommand = "winget install --id sharkdp.fd --source winget -e"
         }
     }
 
@@ -33,7 +33,7 @@ function Test-FzfDependencies {
 }
 
 function Initialize-Fzf {
-    $env:FZF_DEFAULT_COMMAND = 'fd --type file --hidden --exclude .git --exclude bin --exclude obj --exclude node_modules'
+    $env:FZF_DEFAULT_COMMAND = 'fd.exe --type file --hidden --exclude .git --exclude bin --exclude obj --exclude node_modules'
     $env:FZF_DEFAULT_OPTS = @"
 --height=40%
 --layout=reverse

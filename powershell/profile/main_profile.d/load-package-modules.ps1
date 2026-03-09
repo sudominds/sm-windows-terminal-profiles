@@ -71,7 +71,15 @@ $packageModules = @(
 		TestFunction = $null
 		InitializeFunction = $null
 		InstallCommand = "winget install --id jftuga.less --source winget"
-	}
+	},
+  @{
+    Name = "delta"
+      Command = "delta"
+      ModulePath = "./modules/delta/delta.ps1"
+      TestFunction = $null
+      InitializeFunction = $null
+      InstallCommand = "winget install --id dandavison.delta -e --source winget #Syntax highlighting git diff"
+  }
 )
 
 foreach ($packageModule in $packageModules) {

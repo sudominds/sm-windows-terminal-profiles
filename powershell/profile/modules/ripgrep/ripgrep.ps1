@@ -2,6 +2,6 @@
 # ripgrep
 # --------------------------
 function Invoke-RipGrep {
-    rg @args
+    & "rg.exe" @args
 }
 

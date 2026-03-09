@@ -2,6 +2,6 @@
 # fd
 # --------------------------
 function Invoke-Fd {
-    fd @args
+    & "fd.exe" @args
 }
 
