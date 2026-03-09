@@ -1,5 +1,5 @@
 initialize_eza() {
-  export EZA_CONFIG_DIR="$PROFILE_ROOT/../../powershell/profile/modules/eza/config"
+  export EZA_CONFIG_DIR="${EZA_CONFIG_DIR:-$PROFILE_ROOT/modules/eza/config}"
 }
 
 invoke_eza() {

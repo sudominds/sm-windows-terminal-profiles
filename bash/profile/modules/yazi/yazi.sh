@@ -1,5 +1,3 @@
-export YAZI_CONFIG_HOME="$PROFILE_ROOT/../../powershell/profile/modules/yazi/config"
-
 invoke_yazi() {
   local tmp
   local cwd
