@@ -1,8 +1,10 @@
 # sm-windows-terminal-profiles
 
-Windows Terminal / PowerShell profile setup with custom functions and tool modules.
+Terminal profile setup with modular PowerShell and Bash entrypoints, custom functions, and tool modules.
 
-Full profile docs: [powershell/README.md](./powershell/README.md)
+Docs:
+- [PowerShell](./powershell/README.md)
+- [Bash](./bash/README.md)
 
 ## Functions
 
@@ -65,7 +67,7 @@ GitHub: https://github.com/ajeetdsouza/zoxide
 ![zoxide](./screenshots/zoxide.png)
 
 ### `starship`
-Cross-shell prompt configuration for PowerShell.
+Cross-shell prompt configuration shared by PowerShell and Bash.
 
 GitHub: https://github.com/starship/starship
 
