@@ -76,7 +76,7 @@ Pop = ""
 [os]
 disabled = false
 format = "[$symbol]($style)"
-style = "fg:red"
+style = "fg:sky"
 
 [directory]
 format = "[ $path]($style)"
