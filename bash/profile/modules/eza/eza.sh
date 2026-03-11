@@ -1,5 +1,5 @@
 initialize_eza() {
-  export EZA_CONFIG_DIR="${EZA_CONFIG_DIR:-$PROFILE_ROOT/modules/eza/config}"
+  export EZA_CONFIG_DIR="${EZA_CONFIG_DIR:-$PROFILE_ROOT/../../shared/eza}"
 }
 
 invoke_eza() {

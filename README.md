@@ -6,6 +6,57 @@ Docs:
 - [PowerShell](./powershell/README.md)
 - [Bash](./bash/README.md)
 
+## Shared Config
+
+Both profiles use a common `shared/` directory for tool configurations (themes, keymaps, etc.):
+
+```
+shared/
+├── bat/          # bat config + Catppuccin Mocha syntax theme
+├── delta/        # delta gitconfig + catppuccin theme
+├── eza/          # eza color theme
+├── starship/     # starship prompt config
+└── yazi/         # yazi file manager config + theme
+```
+
+### Delta Git Config
+
+To use the bundled `delta` diff viewer config, add this to your `~/.gitconfig`:
+
+```ini
+[include]
+    path = /path/to/sm-windows-terminal-profiles/shared/delta/delta.gitconfig
+```
+
+### Environment Variables
+
+Both profiles support the following optional environment variables:
+
+| Variable | Description | Example |
+|---|---|---|
+| `GIT_BROWSE_OPEN_CMD` | Browser opener for `gbo`. Use `{url}` as placeholder | `wslview {url}` |
+| `GIT_REPO_ROOT_DIR` | Repo roots for `repo` (`;` or `,` separated) | `$HOME/git;$HOME/work` |
+| `GIT_REPO_SEARCH_DEPTH` | Max depth for repo discovery (default: 4) | `6` |
+| `BAT_CONFIG_DIR` | Override bat config directory | |
+| `BAT_THEME` | Override bat theme (default: Catppuccin Mocha) | |
+| `BAT_STYLE` | Override bat style (default: full) | |
+| `EZA_CONFIG_DIR` | Override eza config directory | |
+| `STARSHIP_CONFIG` | Override starship config path | |
+| `YAZI_CONFIG_HOME` | Override yazi config directory | |
+| `YAZI_FILE_ONE` | Path to `file` command (Windows only — see below) | `C:/Program Files/Git/usr/bin/file.exe` |
+
+The PowerShell `repo` function also accepts `GitRepoRootDir` and `GitRepoSearchDepth`.
+
+### Yazi on Windows
+
+On Windows, yazi needs the `file` command for MIME type detection. It's not in PATH by default, but Git for Windows bundles a copy:
+
+```powershell
+$env:YAZI_FILE_ONE = "C:/Program Files/Git/usr/bin/file.exe"
+```
+
+This is not needed on Linux where `file` is available system-wide.
+
 ## Functions
 
 ### `repo`
@@ -74,7 +125,7 @@ GitHub: https://github.com/starship/starship
 ![starship](./screenshots/starship.png)
 
 ### `yazi`
-Terminal file manager integration with cwd handoff back to PowerShell.
+Terminal file manager integration with cwd handoff back to the shell.
 
 GitHub: https://github.com/sxyazi/yazi
 

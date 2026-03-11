@@ -3,6 +3,10 @@ invoke_git_browse_open() {
   local opener_template="${GIT_BROWSE_OPEN_CMD:-${BROWSER:-}}"
   local opener_command=""
 
+  if [[ -z "$opener_template" ]]; then
+    return 1
+  fi
+
   run_detached_command() {
     local command_string="$1"
 
@@ -17,35 +21,14 @@ invoke_git_browse_open() {
     return 0
   }
 
-  if [[ -n "$opener_template" ]]; then
-    if [[ "$opener_template" == *"{url}"* ]]; then
-      opener_command="${opener_template//\{url\}/$url}"
-    else
-      opener_command="$opener_template \"$url\""
-    fi
-
-    run_detached_command "$opener_command"
-    return 0
+  if [[ "$opener_template" == *"{url}"* ]]; then
+    opener_command="${opener_template//\{url\}/$url}"
+  else
+    opener_command="$opener_template \"$url\""
   fi
 
-  if [[ -n "${WSL_DISTRO_NAME:-}" || -n "${WSL_INTEROP:-}" ]]; then
-    if command_exists wslview; then
-      run_detached_command "wslview \"$url\""
-      return 0
-    fi
-  fi
-
-  if command_exists xdg-open; then
-    run_detached_command "xdg-open \"$url\""
-    return 0
-  fi
-
-  if command_exists wslview; then
-    run_detached_command "wslview \"$url\""
-    return 0
-  fi
-
-  return 1
+  run_detached_command "$opener_command"
+  return 0
 }
 
 invoke_git_browse() {
@@ -66,5 +49,7 @@ invoke_git_browse() {
     return 0
   fi
 
-  printf 'No browser opener found. URL: %s\n' "$url"
+  printf '%s\n' "$url"
+  printf 'Set GIT_BROWSE_OPEN_CMD to open URLs automatically.\n'
+  printf 'Example: export GIT_BROWSE_OPEN_CMD='\''wslview {url}'\''\n'
 }

@@ -1,3 +1,5 @@
+export YAZI_CONFIG_HOME="${YAZI_CONFIG_HOME:-$PROFILE_ROOT/../../shared/yazi}"
+
 invoke_yazi() {
   local tmp
   local cwd

@@ -7,7 +7,7 @@ function Invoke-GitBrowse {
             return
         }
 
-        # convert SSH → HTTPS
+        # convert SSH -> HTTPS
         if ($url -match "^git@([^:]+):(.+)$") {
             $url = "https://$($Matches[1])/$($Matches[2])"
         }
@@ -18,7 +18,20 @@ function Invoke-GitBrowse {
         # remove .git suffix
         $url = $url -replace "\.git$", ""
 
-        Start-Process $url
+        $openerTemplate = $env:GIT_BROWSE_OPEN_CMD
+
+        if ($openerTemplate) {
+            if ($openerTemplate -match '\{url\}') {
+                $openerCommand = $openerTemplate -replace '\{url\}', $url
+            } else {
+                $openerCommand = "$openerTemplate `"$url`""
+            }
+            Invoke-Expression $openerCommand
+        } else {
+            Write-Host $url
+            Write-Host 'Set GIT_BROWSE_OPEN_CMD to open URLs automatically.' -ForegroundColor Yellow
+            Write-Host 'Example: $env:GIT_BROWSE_OPEN_CMD = ''wslview {url}''' -ForegroundColor DarkGray
+        }
     }
     catch {
         Write-Host "Not inside a git repository." -ForegroundColor Red

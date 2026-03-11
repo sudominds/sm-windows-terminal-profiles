@@ -1,5 +1,3 @@
-[core]
-	pager = delta --paging=always
 [interactive]
 	diffFilter = delta --color-only
 [delta]
@@ -11,4 +9,4 @@
 [merge]
 	conflictStyle = zdiff3
 [include]
-	path = ~/.config/sm-windows-terminal-profiles/bash/profile/modules/delta/catppuccin.gitconfig
+	path = catppuccin.gitconfig

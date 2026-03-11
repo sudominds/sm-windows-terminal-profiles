@@ -3,14 +3,14 @@
 # -------------------------
 
 function Initialize-Eza {
-    $env:EZA_CONFIG_DIR = Join-Path $PSScriptRoot "config"
+    $env:EZA_CONFIG_DIR = if (-not $env:EZA_CONFIG_DIR) { Join-Path $PSScriptRoot "..\..\..\..\shared\eza" | Resolve-Path } else { $env:EZA_CONFIG_DIR }
 
     function global:Invoke-Eza {
-       & "eza.exe" --icons=auto --group-directories-first @args
+       & "eza" --icons=auto --group-directories-first @args
     }
-    
+
     function global:Invoke-EzaLong {
 		    Write-Host ""
-        & "eza.exe" -lah --icons=auto --group-directories-first @args
+        & "eza" -lah --icons=auto --group-directories-first @args
     }
 }

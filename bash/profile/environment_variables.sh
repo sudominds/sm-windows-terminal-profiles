@@ -1,11 +1,11 @@
 export PAGER="less"
 export SHELL="${SHELL:-/bin/bash}"
-export BAT_CONFIG_DIR="$PROFILE_ROOT/modules/bat/config"
+export BAT_CONFIG_DIR="$PROFILE_ROOT/../../shared/bat"
 export BAT_THEME="Catppuccin Mocha"
 export BAT_STYLE="full"
-export EZA_CONFIG_DIR="$PROFILE_ROOT/modules/eza/config"
-export STARSHIP_CONFIG="$PROFILE_ROOT/modules/starship/config/starship.toml"
-export YAZI_CONFIG_HOME="$PROFILE_ROOT/modules/yazi/config"
+export EZA_CONFIG_DIR="$PROFILE_ROOT/../../shared/eza"
+export STARSHIP_CONFIG="$PROFILE_ROOT/../../shared/starship/starship.toml"
+export YAZI_CONFIG_HOME="$PROFILE_ROOT/../../shared/yazi"
 
 # Optional: repo roots for repo (supports ';' or ',' separators)
 # export GIT_REPO_ROOT_DIR="$HOME/git;$HOME/work/repos"

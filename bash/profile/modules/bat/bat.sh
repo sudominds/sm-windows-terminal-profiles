@@ -1,5 +1,5 @@
 export BAT_PAGER="less"
 export BAT_PAGING="auto"
-export BAT_CONFIG_DIR="${BAT_CONFIG_DIR:-$PROFILE_ROOT/modules/bat/config}"
+export BAT_CONFIG_DIR="${BAT_CONFIG_DIR:-$PROFILE_ROOT/../../shared/bat}"
 export BAT_THEME="${BAT_THEME:-Catppuccin Mocha}"
 export BAT_STYLE="${BAT_STYLE:-full}"

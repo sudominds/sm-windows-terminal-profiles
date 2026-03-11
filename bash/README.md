@@ -17,7 +17,9 @@ source "$HOME/path/to/sm-windows-terminal-profiles/bash/profile/main_profile.sh"
 
 Update the path if the repo lives elsewhere.
 
-## Optional Repo Search Settings
+## Optional Environment Variables
+
+### Repo Search
 
 `repo` uses `GIT_REPO_ROOT_DIR` and optional search depth:
 
@@ -28,34 +30,35 @@ export GIT_REPO_SEARCH_DEPTH="4"
 
 The Bash profile also accepts the legacy `GitRepoRootDir` and `GitRepoSearchDepth` names for compatibility.
 
-## Optional Browser Settings
+### Browser Opener
 
-`gbo` / `git-browse` can use a custom browser opener:
+`gbo` / `git-browse` requires `GIT_BROWSE_OPEN_CMD` to open URLs in a browser. Use `{url}` as a placeholder:
 
 ```bash
 export GIT_BROWSE_OPEN_CMD='wslview {url}'
 ```
 
-Examples:
+More examples:
 
 ```bash
 export GIT_BROWSE_OPEN_CMD='cmd.exe /C start "" {url}'
 export GIT_BROWSE_OPEN_CMD='xdg-open {url}'
-```
-
-If `GIT_BROWSE_OPEN_CMD` is unset, the profile auto-detects `wslview` on WSL and otherwise falls back to `xdg-open`.
-
-On WSL, if browser opening is inconsistent, set this explicitly:
-
-```bash
-export GIT_BROWSE_OPEN_CMD='wslview {url}'
-```
-
-If `wslview` is not installed, or if you do not import Windows paths into WSL, use the full Windows executable path instead:
-
-```bash
 export GIT_BROWSE_OPEN_CMD='/mnt/c/Windows/System32/cmd.exe /C start "" {url}'
-export GIT_BROWSE_OPEN_CMD='"/mnt/c/Program Files/PowerShell/7/pwsh.exe" -NoProfile -Command Start-Process {url}'
+```
+
+If `GIT_BROWSE_OPEN_CMD` (and `BROWSER`) are unset, the URL is printed to the terminal.
+
+### Tool Config Overrides
+
+The profile uses shared config files from the `shared/` directory at the repo root. You can override individual paths:
+
+```bash
+export BAT_CONFIG_DIR="/path/to/custom/bat"
+export BAT_THEME="Catppuccin Mocha"
+export BAT_STYLE="full"
+export EZA_CONFIG_DIR="/path/to/custom/eza"
+export STARSHIP_CONFIG="/path/to/custom/starship.toml"
+export YAZI_CONFIG_HOME="/path/to/custom/yazi"
 ```
 
 ## What This Profile Adds
@@ -68,8 +71,8 @@ After setup, these aliases/functions are available when dependencies are install
 - `find` -> `fd`
 - `y` -> launch `yazi`
 - `repo` -> fuzzy jump to repositories
-- `gb` -> interactive git branch switch/delete/fetch
-- `gbo` -> open repo remote URL in browser
+- `gb` / `git-branch` -> interactive git branch switch/delete/fetch
+- `gbo` / `git-browse` -> open repo remote URL in browser
 - `gitdiff` -> inspect or toggle `delta` side-by-side and line-number settings
 
 If `fzf` shell integration is available:
@@ -80,9 +83,9 @@ If `fzf` shell integration is available:
 
 ## Optional Delta Git Config
 
-If you want git to use the bundled `delta` config, include this from your git config:
+If you want git to use the bundled `delta` config, add this to your `~/.gitconfig`:
 
 ```ini
 [include]
-    path = ~/.config/sm-windows-terminal-profiles/bash/profile/modules/delta/delta.gitconfig
+    path = /path/to/sm-windows-terminal-profiles/shared/delta/delta.gitconfig
 ```

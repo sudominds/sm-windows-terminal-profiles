@@ -7,6 +7,7 @@ format = """\
 $all
 $os $directory$character"""
 
+scan_timeout = 500
 command_timeout = 2000
 
 # ==========================
@@ -75,7 +76,7 @@ Pop = ""
 [os]
 disabled = false
 format = "[$symbol]($style)"
-style = "fg:sky"
+style = "fg:red"
 
 [directory]
 format = "[ $path]($style)"
